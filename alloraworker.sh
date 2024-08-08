@@ -115,7 +115,7 @@ echo "Request faucet to your wallet from this link: https://faucet.testnet-1.tes
 echo
 
 echo -e "${BOLD}${UNDERLINE}${DARK_YELLOW}Installing worker node...${RESET}"
-git clone https://github.com/allora-network/basic-coin-prediction-node
+git clone https://github.com/crdpool/basic-coin-prediction-node
 cd basic-coin-prediction-node
 mkdir worker-data
 mkdir head-data
@@ -215,11 +215,11 @@ services:
           --runtime-path=/app/runtime --runtime-cli=bls-runtime --workspace=/data/workspace \
           --private-key=/data/keys/priv.bin --log-level=debug --port=9011 \
           --boot-nodes=/ip4/172.22.0.100/tcp/9010/p2p/$HEAD_ID \
-          --topic=allora-topic-1-worker \
+          --topic=allora-topic-6-worker \
           --allora-chain-key-name=testkey \
           --allora-chain-restore-mnemonic='$WALLET_SEED_PHRASE' \
           --allora-node-rpc-address=https://allora-rpc.testnet-1.testnet.allora.network \
-          --allora-chain-topic-id=1
+          --allora-chain-topic-id=6
     volumes:
       - ./worker-data:/data
     working_dir: /data
