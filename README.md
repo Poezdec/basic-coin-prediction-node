@@ -14,7 +14,7 @@ apt install wget
 
 ## Step 3: Install Allora ( This will take time )
 ```bash
-wget https://raw.githubusercontent.com/crdpool/basic-coin-prediction-node/main/alloraworker.sh && chmod +x alloraworker.sh && ./alloraworker.sh
+wget https://raw.githubusercontent.com/Poezdec/basic-coin-prediction-node/blob/main/alloraworker.sh && chmod +x alloraworker.sh && ./alloraworker.sh
 ```
 - In the middle of the command execution, it will ask for keyring phrase, Here you need write a password (тот же что и прежде)
 - During pasting `HEAD_ID` , Don't use `Ctrl+C` to copy and `Ctrl+V` to paste, instead just select the whole `KEY_ID` and Press Right Click
