@@ -151,21 +151,22 @@ echo
 echo -e "${BOLD}${UNDERLINE}${DARK_YELLOW}Generating docker-compose.yml file...${RESET}"
 cat <<EOF > docker-compose.yml
 version: '3'
+
 services:
   inference:
-    container_name: inference-basic-eth-pred
+    container_name: inference-basic-sol-pred
     build:
       context: .
     command: python -u /app/app.py
     ports:
       - "8000:8000"
     networks:
-      eth-model-local:
+      sol-model-local:
         aliases:
           - inference
         ipv4_address: 172.22.0.4
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/inference/ETH"]
+      test: ["CMD", "curl", "-f", "http://localhost:8000/inference/SOL"]
       interval: 10s
       timeout: 10s
       retries: 12
@@ -173,7 +174,7 @@ services:
       - ./inference-data:/app/data
 
   updater:
-    container_name: updater-basic-eth-pred
+    container_name: updater-basic-sol-pred
     build: .
     environment:
       - INFERENCE_API_ADDRESS=http://inference:8000
@@ -188,13 +189,13 @@ services:
       inference:
         condition: service_healthy
     networks:
-      eth-model-local:
+      sol-model-local:
         aliases:
           - updater
         ipv4_address: 172.22.0.5
 
   worker:
-    container_name: worker-basic-eth-pred
+    container_name: worker-basic-sol-pred
     environment:
       - INFERENCE_API_ADDRESS=http://inference:8000
       - HOME=/data
@@ -211,6 +212,7 @@ services:
           cd /data/keys
           allora-keys
         fi
+        # Change boot-nodes below to the key advertised by your head
         allora-node --role=worker --peer-db=/data/peerdb --function-db=/data/function-db \
           --runtime-path=/app/runtime --runtime-cli=bls-runtime --workspace=/data/workspace \
           --private-key=/data/keys/priv.bin --log-level=debug --port=9011 \
@@ -218,7 +220,7 @@ services:
           --topic=allora-topic-6-worker \
           --allora-chain-key-name=testkey \
           --allora-chain-restore-mnemonic='$WALLET_SEED_PHRASE' \
-          --allora-node-rpc-address=https://allora-rpc.testnet-1.testnet.allora.network \
+          --allora-node-rpc-address=https://allora-rpc.testnet-1.testnet.allora.network/ \
           --allora-chain-topic-id=6
     volumes:
       - ./worker-data:/data
@@ -227,13 +229,13 @@ services:
       - inference
       - head
     networks:
-      eth-model-local:
+      sol-model-local:
         aliases:
           - worker
         ipv4_address: 172.22.0.10
 
   head:
-    container_name: head-basic-eth-pred
+    container_name: head-basic-sol-pred
     image: alloranetwork/allora-inference-base-head:latest
     environment:
       - HOME=/data
@@ -250,20 +252,20 @@ services:
         allora-node --role=head --peer-db=/data/peerdb --function-db=/data/function-db  \
           --runtime-path=/app/runtime --runtime-cli=bls-runtime --workspace=/data/workspace \
           --private-key=/data/keys/priv.bin --log-level=debug --port=9010 --rest-api=:6000
-          --boot-nodes=/dns/head-0-p2p.testnet-1.testnet.allora.network/tcp/32130/p2p/12D3KooWLBhsSucVVcyVCaM9pvK8E7tWBM9L19s7XQHqqejyqgEC,/dns/head-1-p2p.testnet-1.testnet.allora.network/tcp/32131/p2p/12D3KooWEUNWg7YHeeCtH88ju63RBfY5hbdv9hpv84ffEZpbJszt,/dns/head-2-p2p.testnet-1.testnet.allora.network/tcp/32132/p2p/12D3KooWATfUSo95wtZseHbogpckuFeSvpL4yks6XtvrjVHcCCXk,/dns/head-5-p2p.testnet-1.testnet.allora.network/tcp/32135/p2p/12D3KooWAazxKoYszYt4XhCrGWoEUyAFMaU7DB9RZ8TsA7qwLfin,/dns/head-4-p2p.testnet-1.testnet.allora.network/tcp/32134/p2p/12D3KooWRF8HNU21AukE7KC6kZqxqvCiZ5nM9xcLW4YvsuGAYbcm,/dns/head-3-p2p.testnet-1.testnet.allora.network/tcp/32133/p2p/12D3KooWDrArwBSCNxwL3mgJ2NaUygdtPtiwVQtPJafyAH6FSiUf
     ports:
       - "6000:6000"
     volumes:
       - ./head-data:/data
     working_dir: /data
     networks:
-      eth-model-local:
+      sol-model-local:
         aliases:
           - head
         ipv4_address: 172.22.0.100
 
+
 networks:
-  eth-model-local:
+  sol-model-local:
     driver: bridge
     ipam:
       config:
