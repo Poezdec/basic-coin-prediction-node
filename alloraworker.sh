@@ -154,7 +154,7 @@ version: '3'
 
 services:
   inference:
-    container_name: inference-basic-sol-pred
+    container_name: inference
     build:
       context: .
     command: python -u /app/app.py
@@ -174,7 +174,7 @@ services:
       - ./inference-data:/app/data
 
   updater:
-    container_name: updater-basic-sol-pred
+    container_name: updater
     build: .
     environment:
       - INFERENCE_API_ADDRESS=http://inference:8000
@@ -195,7 +195,7 @@ services:
         ipv4_address: 172.22.0.5
 
   worker:
-    container_name: worker-basic-sol-pred
+    container_name: worker
     environment:
       - INFERENCE_API_ADDRESS=http://inference:8000
       - HOME=/data
@@ -235,7 +235,7 @@ services:
         ipv4_address: 172.22.0.10
 
   head:
-    container_name: head-basic-sol-pred
+    container_name: head
     image: alloranetwork/allora-inference-base-head:latest
     environment:
       - HOME=/data
