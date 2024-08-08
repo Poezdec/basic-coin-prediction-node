@@ -282,6 +282,22 @@ echo
 
 echo -e "${BOLD}${UNDERLINE}${DARK_YELLOW}Building and starting Docker containers...${RESET}"
 docker-compose build
-docker-compose up -d
 echo
 
+echo -e "${BOLD}${DARK_YELLOW}Creating Worker.${RESET}"
+execute_with_prompt 'mkdir workers'
+echo
+execute_with_prompt 'mkdir workers/worker-1 workers/worker-2'
+echo
+execute_with_prompt 'sudo chmod -R 777 workers/worker-1'
+echo
+execute_with_prompt 'sudo chmod -R 777 workers/worker-2'
+echo
+execute_with_prompt 'sudo docker run -it --entrypoint=bash -v ./workers/worker-1:/data alloranetwork/allora-inference-base:latest -c "mkdir -p /data/keys && (cd /data/keys && allora-keys)"'
+echo
+execute_with_prompt 'sudo docker run -it --entrypoint=bash -v ./workers/worker-2:/data alloranetwork/allora-inference-base:latest -c "mkdir -p /data/keys && (cd /data/keys && allora-keys)"'
+echo
+execute_with_prompt 'cd'
+echo
+
+echo -e "${BOLD}${DARK_YELLOW}Preparing Complete${RESET}"
