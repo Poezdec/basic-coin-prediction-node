@@ -1,17 +1,13 @@
-import os
 import requests
 import sys
 import json
-
-INFERENCE_ADDRESS = os.environ["INFERENCE_API_ADDRESS"]
-
-
-def process(token_name):
-    response = requests.get(f"{INFERENCE_ADDRESS}/inference/{token_name}")
-    content = response.text
-    return content
-
-
+ 
+def process(argument):
+    headers = {'Content-Type': 'application/json'}
+    url = f"http://inference:8000/inference/{argument}"
+    response = requests.get(url, headers=headers)
+    return response.text
+ 
 if __name__ == "__main__":
     # Your code logic with the parsed argument goes here
     try:
@@ -22,8 +18,8 @@ if __name__ == "__main__":
             blockHeight = sys.argv[2]
             blockHeightEval = sys.argv[3]
             default_arg = sys.argv[4]
-            
-            response_inference = process(token_name=default_arg)
+
+            response_inference = process(argument=default_arg)
             response_dict = {"infererValue": response_inference}
             value = json.dumps(response_dict)
     except Exception as e:
